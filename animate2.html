@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="js/vue.js"></script>
+	<link rel="stylesheet" href="css/animate.css" />
+	<style>
+		.demo{
+			width: 300px;
+			height: 300px;
+			background-color: #ccc;
+		}
+		
+	</style>
+</head>
+<body>
+	<div id="box">
+		<button @click="flag=!flag">切换</button>
+		<transition 
+			enter-active-class="animated flipInY" 
+			leave-active-class="animated flipOutY"
+		 >
+			<div class="demo" v-if="flag">
+			  	这是一个demo
+			</div>
+		</transition>
+	</div>
+	<script>
+		new Vue({
+			el:"#box",
+			data:{
+				flag:false
+			}
+		})
+	</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="js/vue.js"></script>
+	<script src="js/axios.js"></script>
+	<style>
+		ol,ul{
+			padding: 0;
+			margin:0;
+			list-style: none;
+		}
+		ol li{
+			float:left;
+			max-width: 150px;
+			text-align: center;
+			margin:10px;
+		}
+		.clear{
+			clear:both;
+		}
+		.slh{
+			text-overflow: ellipsis;
+			overflow: hidden;
+			white-space: nowrap;
+		}
+
+	</style>
+</head>
+<body>
+	<div id="box">
+		<input type="text" v-model="companyName" /><br />
+		<input type="text" v-model="companyDesc" /><br />
+		<input type="button" @click="add">
+		<ul>
+			<li v-for="item in list" class="clear">
+				<ol>
+					<li>{{item.id}}</li>
+					<li>{{item.name}}</li>
+					<li class="slh">{{item.description}}</li>
+					<li @click="del(item.id)">删除</li>
+					<li @click="modify(item.id)">修改</li>
+				</ol>
+			</li>
+		</ul>
+	</div>
+	<script>
+		new Vue({
+			el:"#box",
+			data:{
+				list:[],
+				companyName:'',
+				companyDesc:''
+			},
+			created(){
+				this.getData();
+			},
+			methods:{
+				getData(){
+						axios.get("http://localhost:3000/companies",{
+						params:{
+							id_gte:3
+						}
+					}).then((res)=>{
+						this.list =res.data;
+					})
+				},
+				add(){
+					axios.post("http://localhost:3000/companies",{
+						name:this.companyName,
+						description:this.companyDesc
+					},{
+						headers:{
+							"Content-Type":"application/json"
+						}
+					}).then((res)=>{
+						console.log(res);
+						this.getData();
+					})
+				},
+				del(id){
+				   if(confirm("确实要删除这条记录吗?")){
+				   	  axios.delete("http://localhost:3000/companies/"+id).then((res)=>{
+						console.log(res);
+						this.getData();
+					})
+				   }
+					
+				},
+				modify(id){
+					axios.patch("http://localhost:3000/companies/"+id,{
+						name:this.companyName,
+						description:this.companyDesc
+					},{
+						headers:{
+							"Content-Type":"application/json"
+						}
+					}).then((res)=>{
+						this.getData();
+					})
+				}
+			}
+		})
+	</script>
+</body>
+</html>
